@@ -17,7 +17,7 @@ def update_data():
 
     for each_list in weekly_ohlc:
         date_in_list = datetime.utcfromtimestamp(each_list[0] / 1000).strftime('%Y-%m-%dT%H:%M:%SZ')
-        if timestamp < int(each_list[0] / 1000):
+        if timestamp+3600 < each_list[0] / 1000:
             if date_in_list.endswith("00:00:00Z"):
                 opening = each_list[1]
                 high, low = each_list[2], each_list[3]
