@@ -15,7 +15,7 @@ def moonshots():
     root = tk.Tk()
     root.title("Moonshots")
     root.iconbitmap("python.ico")
-    root.geometry("1200x750")
+    root.geometry("1400x750")
 
 
     """ Top """
@@ -32,6 +32,11 @@ def moonshots():
     #LARGE_FONT=
     style.use("ggplot")
 
+    #Set path directories for data and model
+    main_pth = os.path.dirname(os.path.realpath(sys.argv[0]))
+    pth = os.path.join(main_pth, "Data\BINANCE_BTCUSDT, 1D.csv")
+    pthm = os.path.join(main_pth, "Data\Multivariate_LSTM_4out_diff_stdscale.h5")
+            
 
 ################### FRAME1 ###################
     """ FRAME 1"""
@@ -45,27 +50,41 @@ def moonshots():
         global axs
         global ani
 
-        fig, axs = plt.subplots(1, 1, figsize=(7,5))
+        fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(10,5))
 
 
         def animate(i):
             print(os.path.dirname(os.path.realpath(sys.argv[0])))
-            main_pth = os.path.dirname(os.path.realpath(sys.argv[0]))
-            pth = os.path.join(main_pth, "Data\BINANCE_BTCUSDT, 1D.csv")
-            pthm = os.path.join(main_pth, "Data\multivariate_lstm_4out.h5")
             
             # Get the dataframe and prepared data
-            X, Y, scaler, pullData = forecaster.prepare_data(pth)
+            X, scaler, pullData = forecaster.prepare_data(pth)
             # Predict using the prepared data
-            predictions = forecaster.forecast(pthm, pth)
+            predictions = forecaster.forecast(X, scaler, pthm)
             # Plot the price and predictions
-            axs.clear()
-            pullData.iloc[60:].plot('time', 'close', ax=axs)
-            axs.plot(predictions[:,-1], label="Predictions_close")
-            plt.xticks(rotation='vertical')
-            plt.ylabel("Price USD")
-            plt.subplots_adjust(bottom=0.27)
-            plt.legend()
+            axs[0,0].clear(); axs[0,1].clear(); axs[1,0].clear(); axs[1,1].clear()
+            pullData.iloc[60:].plot('time', 'close', ax=axs[0,0])
+            axs[0,0].plot(predictions[:,-1], label="Predictions")
+            axs[0,0].legend()
+
+            pullData.iloc[60:].plot('time', 'open', ax=axs[0,1])
+            axs[0,1].plot(predictions[:,0], label="Predictions")
+            axs[0,1].legend()
+            pullData.iloc[60:].plot('time', 'high', ax=axs[1,0])
+            axs[1,0].plot(predictions[:,1], label="Predictions")
+            axs[1,0].legend()
+
+            pullData.iloc[60:].plot('time', 'low', ax=axs[1,1])
+            axs[1,1].plot(predictions[:,3], label="Predictions")
+            axs[1,1].legend()
+
+            #Rotate
+            for ax in fig.axes:
+                plt.sca(ax)
+                plt.xticks(rotation=90)
+            
+            axs[0,0].set_ylabel("Price USD")
+            axs[1,0].set_ylabel("Price USD")
+            plt.subplots_adjust(bottom=0.29)
             
 
         canvas = FigureCanvasTkAgg(fig, master=frame_1)
@@ -76,7 +95,7 @@ def moonshots():
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 
-        ani = FuncAnimation(fig, animate, interval=7500)
+        ani = FuncAnimation(fig, animate, interval=15500)
     show_plot()
     """ End FRAME 1"""
 
@@ -92,7 +111,11 @@ def moonshots():
         anchor=tk.N,
         font=("Playfair", 12, BOLD)
         ).grid(row=0, column=0, columnspan=2, pady=5)
-    inp_capita = tk.Entry(frame_2, width=20).grid(row=1, column=1, columnspan=2)
+    
+    lbl_btn = tk.Label(frame_2, text="Initial Capita").grid(row=1, column=0)
+    inp_capita = tk.Entry(frame_2, width=20)
+    inp_capita.grid(row=1, column=1, columnspan=1)
+    
 
     Strats = tk.StringVar()
     options = [
@@ -106,21 +129,50 @@ def moonshots():
     lbl_drp = tk.Label(frame_2, text="Strategies").grid(row=2, column=0)
     strat_list = tk.OptionMenu(frame_2, Strats, *options).grid(row=2, column=1)
 
-    lbl_btn = tk.Label(frame_2, text="Initial Capita").grid(row=1, column=0)
-    btn =tk.Button(frame_2, text="Submit", padx=5).grid(row=3, column=0)
 
+
+    ################### FRAME3 ###################
+    """ FRAME 3"""
+    frame_3 = tk.LabelFrame(root, text="Profit", padx=290, pady=10)
+    frame_3.grid(row=3, column=1, padx=5, pady=5)
+    
+
+    def prof():
+        
+        init_cap = int(inp_capita.get())
+        X, scaler, pullData = forecaster.prepare_data(pth)
+        predictions = forecaster.forecast(X, scaler, pthm)
+        num_btc, profit = forecaster.estimate_profit(data=pullData,
+         predictions=predictions, 
+         initial_capita=init_cap)
+        
+        init_lbl = tk.Label(frame_3, text=f"Initial Capita: {init_cap}", anchor=tk.W)
+        if float(profit)>0:
+            prof_lbl = tk.Label(
+                frame_3, text=f"Your profit at the end of next day: {profit}$",
+                fg='green'
+                )
+        else:
+            prof_lbl = tk.Label(
+                frame_3, text=f"Your profit at the end of next day: {profit}$",
+                fg='red'
+                )
+
+        btc_lbl = tk.Label(frame_3, text=f"You have {num_btc} bitcoins")
+
+        init_lbl.grid(row=1, column=0, columnspan=2)
+        prof_lbl.grid(row=2, column=1)
+        btc_lbl.grid(row=3, column=1)
+
+    """" End FRAME3 """
+
+    btn =tk.Button(frame_2, text="Submit",
+     padx=5, command=prof
+     ).grid(row=3, column=0)
 
     """ End FRAME 2 """
 
 
-################### FRAME3 ###################
-    """ FRAME 3"""
-    frame_3 = tk.LabelFrame(root, text="Profit", padx=330, pady=5)
-    frame_3.grid(row=2, column=1, padx=5, pady=5)
-
-    tk.Label(frame_3, text="Your Profit:").pack()
-
-    """" End FRAME3 """
 
 
     """Quit"""
@@ -138,7 +190,7 @@ def moonshots():
         padx=8, pady=8,
         bg='white', activebackground='grey'
          ).grid(
-         row=4, column=0
+         row=3, column=0
          )
     """ End Quit """
 
