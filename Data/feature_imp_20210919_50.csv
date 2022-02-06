@@ -1,0 +1,51 @@
+Feature Name,Feature Importance
+sma90 avg_transaction_value,0.18205777132534778
+wma30 avg_transaction_value,0.0830255780235127
+closing_price,0.06601023610582964
+dema7 opening_price,0.058347758359525145
+ema90 avg_transaction_value,0.04178351757125916
+tema30 highest_price,0.03293062281732809
+opening_price,0.030503821089384146
+tema7 closing_price,0.028058671664189835
+ema30 avg_transaction_value,0.02485941441256543
+dema90 avg_transaction_value,0.02474088413075328
+tema90 avg_transaction_value,0.02468762949842732
+sma90 closing_price,0.016772022577793838
+wma7 miner_revenue,0.016756896251127206
+bband_lower7 lowest_price,0.016648884913313615
+bband_upper30 closing_price,0.016594443488691765
+sma90 highest_price,0.016568494073916487
+ema90 opening_price,0.01650551737198095
+dema90 highest_price,0.01650187709879359
+bband_upper30 highest_price,0.016488732745558166
+tema30 closing_price,0.016482741758932967
+dema7 number_of_coins_in_circulation,0.01643819460110156
+dema90 closing_price,0.016394261871678223
+highest_price,0.015713457343289074
+dema7 lowest_price,0.011168300065343261
+tema7 lowest_price,0.009900090384899512
+dema7 closing_price,0.009771102144770455
+tema7 highest_price,0.009607767740421547
+bband_upper90 opening_price,0.008613600673389933
+bband_upper90 lowest_price,0.008515689212856259
+bband_upper90 closing_price,0.008456471229660272
+bband_upper30 lowest_price,0.008443156755750669
+tema90 opening_price,0.008421381161206876
+ema90 highest_price,0.008407831850185418
+ema30 number_of_coins_in_circulation,0.00836048875140427
+ema7 opening_price,0.008344465099708936
+wma30 number_of_coins_in_circulation,0.008332409259350379
+tema90 highest_price,0.00831240626121716
+wma90 avg_transaction_value,0.00828235349288181
+dema30 highest_price,0.008277601436541467
+tema30 opening_price,0.008263531772240845
+tema90 lowest_price,0.0082543104636674
+sma7 opening_price,0.008248119070764899
+bband_lower7 opening_price,0.008246278200589744
+tema30 lowest_price,0.008204185801933465
+lowest_price,0.005466819548942257
+wma7 closing_price,0.004138329193787463
+tema7 opening_price,0.00275178989631762
+sma7 closing_price,0.00104741894371632
+ema7 lowest_price,0.0010295864014427186
+ema7 closing_price,0.0008779375637252206
